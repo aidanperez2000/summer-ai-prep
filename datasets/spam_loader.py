@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -54,5 +55,7 @@ plt.title('Distribution of Ham and Spam Messages')
 plt.xlabel('Message Type')
 plt.ylabel('Count')
 plt.tight_layout()
-plt.savefig('spam_distribution.png', dpi=150)
+output_root = Path(__file__).resolve().parents[1]
+plt.savefig(output_root / 'spam_distribution.png', dpi=150)
+plt.savefig(output_root / 'notes' / 'spam_distribution.png', dpi=150)
 plt.show()
