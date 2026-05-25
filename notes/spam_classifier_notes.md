@@ -13,6 +13,7 @@ Once the data is preprocessed, we can train a machine learning model to classify
 - Support Vector Machines (SVM)
 - Random Forest
 - Logistic Regression
+ 
 We used a multinomial Naive Bayes classifier for this task, which is effective for text classification problems.
 ## Model Evaluation
 After training the model, we need to evaluate its performance using metrics such as:
