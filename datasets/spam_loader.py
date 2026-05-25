@@ -53,5 +53,6 @@ plt.bar(['Ham', 'Spam'], spam_data['label_num'].value_counts(), color=['blue', '
 plt.title('Distribution of Ham and Spam Messages')
 plt.xlabel('Message Type')
 plt.ylabel('Count')
+plt.tight_layout()
+plt.savefig('spam_distribution.png', dpi=150)
 plt.show()
-plt.savefig('spam_distribution.png')
