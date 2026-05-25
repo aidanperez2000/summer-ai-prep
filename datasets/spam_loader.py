@@ -56,6 +56,5 @@ plt.xlabel('Message Type')
 plt.ylabel('Count')
 plt.tight_layout()
 output_root = Path(__file__).resolve().parents[1]
-plt.savefig(output_root / 'spam_distribution.png', dpi=150)
 plt.savefig(output_root / 'notes' / 'spam_distribution.png', dpi=150)
 plt.show()
