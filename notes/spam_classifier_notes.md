@@ -22,9 +22,13 @@ After training the model, we need to evaluate its performance using metrics such
 - F1 Score
 
 We can use a confusion matrix to visualize the performance of the model and identify any misclassifications.
+
 ## Plot of Spam vs Ham
-To visualize the distribution of spam and ham emails in the dataset, we can create a bar plot showing the count of each class. This can help us understand the balance of the dataset and identify any potential issues with class imbalance, which can affect the performance of the model. We can use libraries such as Matplotlib or Seaborn to create this plot.  We used Matplotlib to create a bar plot that shows the count of spam and ham emails in the dataset, which helps us understand the distribution of the classes and identify any potential issues with class imbalance. The plot is shown below:
-<img src="../spam_distribution.png" alt="Spam vs Ham Plot" width="400" />
+
+To visualize the distribution of spam and ham emails in the dataset, we can create a bar plot showing the count of each class. This can help us understand the balance of the dataset and identify any potential issues with class imbalance, which can affect the performance of the model. We can use libraries such as Matplotlib or Seaborn to create this plot. We used Matplotlib to create a bar plot that shows the count of spam and ham emails in the dataset, which helps us understand the distribution of the classes and identify any potential issues with class imbalance. The plot is shown below:
+
+![Spam vs Ham Plot](./spam_distribution.png)
 
 ## Conclusion
-In conclusion, building a spam classifier involves collecting and preprocessing data, training a machine learning model,and evaluating its performance. By following these steps, we can create an effective spam classifier that helps filter out unwanted emails and improve the user experience.  The code for this is in the `datasets/spam_classifier.py` file.
+
+In conclusion, building a spam classifier involves collecting and preprocessing data, training a machine learning model, and evaluating its performance. By following these steps, we can create an effective spam classifier that helps filter out unwanted emails and improve the user experience. The code for this is in the `datasets/spam_loader.py` file.
