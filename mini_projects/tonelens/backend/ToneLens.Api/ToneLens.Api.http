@@ -1,0 +1,6 @@
+@ToneLens.Api_HostAddress = http://localhost:5136
+
+GET {{ToneLens.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
