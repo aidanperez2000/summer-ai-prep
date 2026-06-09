@@ -26,7 +26,7 @@ namespace ToneLens.Api.Controllers
                 return BadRequest(new { error = "Text is required for tone analysis." });
             }
 
-            _logger.LogInformation("Analyzing tone for text: {Text}", request.Text);
+            _logger.LogInformation("Analyzing tone request. TextLength={TextLength}", request.Text.Length);
             var response = await _toneAnalysisService.AnalyzeToneAsync(request, cancellationToken);
 
             return Ok(response);
