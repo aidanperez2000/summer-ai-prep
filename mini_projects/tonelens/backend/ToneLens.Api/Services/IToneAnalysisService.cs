@@ -4,6 +4,6 @@ namespace ToneLens.Api.Services
 {
     public interface IToneAnalysisService
     {
-        AnalyzeToneResponse AnalyzeTone(AnalyzeToneRequest request);
+        Task<AnalyzeToneResponse> AnalyzeToneAsync(AnalyzeToneRequest request, CancellationToken cancellationToken = default);
     }
 }

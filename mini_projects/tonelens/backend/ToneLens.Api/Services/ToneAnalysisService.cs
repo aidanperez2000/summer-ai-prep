@@ -9,7 +9,7 @@ namespace ToneLens.Api.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public AnalyzeToneResponse AnalyzeTone(AnalyzeToneRequest request)
+        public Task<AnalyzeToneResponse> AnalyzeToneAsync(AnalyzeToneRequest request, CancellationToken cancellationToken = default)
         {
             var text = request.Text;
             var signals = new List<Signal>();
@@ -50,12 +50,14 @@ namespace ToneLens.Api.Services
                 ambiguities.Add("The relationship context may also affect the tone, introducing additional ambiguity.");
             }
 
-            return new AnalyzeToneResponse
+            var response = new AnalyzeToneResponse
             {
                 Signals = signals,
                 Interpretations = interpretations,
                 Ambiguities = ambiguities
             };
+
+            return Task.FromResult(response);
         }
 
         /// <summary>

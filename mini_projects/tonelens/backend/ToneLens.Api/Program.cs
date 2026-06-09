@@ -7,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IToneAnalysisService, ToneAnalysisService>();
+builder.Services.AddHttpClient<IToneAnalysisService, OllamaToneAnalysisService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+    client.Timeout = TimeSpan.FromMinutes(5);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

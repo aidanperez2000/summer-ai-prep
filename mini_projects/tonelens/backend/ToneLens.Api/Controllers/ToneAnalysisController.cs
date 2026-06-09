@@ -18,13 +18,8 @@ namespace ToneLens.Api.Controllers
             _toneAnalysisService = toneAnalysisService;
         }
 
-        /// <summary>
-        /// Analyzes the tone of the provided text and returns signals, interpretations, and ambiguities.
-        /// </summary>
-        /// <param name="request">The request containing the text to analyze.</param>
-        /// <returns>The response containing the analysis results.</returns>
         [HttpPost("analyze")]
-        public ActionResult<AnalyzeToneResponse> AnalyzeTone([FromBody] AnalyzeToneRequest request)
+        public async Task<ActionResult<AnalyzeToneResponse>> AnalyzeTone([FromBody] AnalyzeToneRequest request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.Text))
             {
@@ -32,7 +27,7 @@ namespace ToneLens.Api.Controllers
             }
 
             _logger.LogInformation("Analyzing tone for text: {Text}", request.Text);
-            var response = _toneAnalysisService.AnalyzeTone(request);
+            var response = await _toneAnalysisService.AnalyzeToneAsync(request, cancellationToken);
 
             return Ok(response);
         }
