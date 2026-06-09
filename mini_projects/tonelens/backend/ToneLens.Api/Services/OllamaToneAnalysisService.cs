@@ -30,7 +30,9 @@ namespace ToneLens.Api.Services
                 Stream = false
             };
 
-            var jsonRequest = JsonSerializer.Serialize(ollamaRequest);
+            var jsonRequest = JsonSerializer.Serialize(
+                 ollamaRequest,
+                 new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
             HttpResponseMessage httpResponse;
             try
