@@ -7,10 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+ var ollamaBaseUrl = builder.Configuration.GetValue<string>("Ollama:BaseUrl") ?? "http://localhost:11434";
+ var ollamaTimeoutMinutes = builder.Configuration.GetValue<double?>("Ollama:TimeoutMinutes") ?? 5;
+
+
 builder.Services.AddHttpClient<IToneAnalysisService, OllamaToneAnalysisService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:11434");
-    client.Timeout = TimeSpan.FromMinutes(5);
+    client.BaseAddress = new Uri(ollamaBaseUrl);
+    client.Timeout = TimeSpan.FromMinutes(ollamaTimeoutMinutes);
 });
 var app = builder.Build();
 
