@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ToneLens.Api.Models;
+using ToneLens.Api.Services;
 
 namespace ToneLens.Api.Controllers
 {
@@ -9,28 +10,24 @@ namespace ToneLens.Api.Controllers
     {
         private readonly ILogger<ToneAnalysisController> _logger;
 
-        public ToneAnalysisController(ILogger<ToneAnalysisController> logger)
+        private readonly IToneAnalysisService _toneAnalysisService;
+
+        public ToneAnalysisController(ILogger<ToneAnalysisController> logger, IToneAnalysisService toneAnalysisService)
         {
             _logger = logger;
+            _toneAnalysisService = toneAnalysisService;
         }
 
         [HttpPost("analyze")]
-        public ActionResult<AnalyzeToneResponse> AnalyzeTone([FromBody] AnalyzeToneRequest request)
+        public async Task<ActionResult<AnalyzeToneResponse>> AnalyzeTone([FromBody] AnalyzeToneRequest request, CancellationToken cancellationToken)
         {
-            // Placeholder for tone analysis logic
-            var response = new AnalyzeToneResponse
+            if (string.IsNullOrEmpty(request.Text))
             {
-                Signals = new List<Signal>
-                {
-                    new Signal { Name = "Positive", Strength = 0.8, Explanation = "The text contains positive language." },
-                    new Signal { Name = "Formal", Strength = 0.6, Explanation = "The text has a formal tone." }
-                },
-                Interpretations = new List<Interpretation>
-                {
-                    new Interpretation { InterpretationText = "The tone is generally positive and formal.", ConfidenceScore = 0.85, Reasoning = "Based on the presence of positive and formal signals." }
-                },
-                Ambiguities = new List<string> { "The tone could also be interpreted as neutral due to some ambiguous language." }
-            };
+                return BadRequest(new { error = "Text is required for tone analysis." });
+            }
+
+            _logger.LogInformation("Analyzing tone request. TextLength={TextLength}", request.Text.Length);
+            var response = await _toneAnalysisService.AnalyzeToneAsync(request, cancellationToken);
 
             return Ok(response);
         }
