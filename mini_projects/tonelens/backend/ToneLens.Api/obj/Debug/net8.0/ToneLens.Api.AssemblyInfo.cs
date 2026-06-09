@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ToneLens.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c131ea3780aa10b722529a9b6f00ce6e6dbd407")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f24b761c210c19a366f4d5a18dff4b8aa0587725")]
 [assembly: System.Reflection.AssemblyProductAttribute("ToneLens.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ToneLens.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
