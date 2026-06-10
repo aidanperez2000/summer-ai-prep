@@ -121,7 +121,14 @@ function App() {
               <span>{loadingMessage}</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="progress-track">
+            <div 
+              className="progress-track"
+              role="progressbar"
+              aria-label="Analysis progress"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress)}
+              aria-valuetext={loadingMessage}>
               <div className="progress-fill" style={{ width: `${progress}%` }} />
             </div>
             <p className="loading-hint">Tip: Longer messages and context can take a few extra seconds.</p>
