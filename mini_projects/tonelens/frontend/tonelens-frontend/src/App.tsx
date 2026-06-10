@@ -52,11 +52,11 @@ function App() {
     setLoadingMessage(loadingStages[0].message)
 
     clearProgressInterval()
+    const stagesDescending = [...loadingStages].reverse()
     progressIntervalRef.current = window.setInterval(() => {
       const elapsedMs = Date.now() - startedAt
       const computedProgress = Math.min(92, 10 + elapsedMs / 120)
-      const nextStage = [...loadingStages].reverse().find(stage => elapsedMs >= stage.atMs)
-
+      const nextStage = stagesDescending.find(stage => elapsedMs >= stage.atMs)
       setProgress(computedProgress)
       if (nextStage) {
         setLoadingMessage(nextStage.message)
