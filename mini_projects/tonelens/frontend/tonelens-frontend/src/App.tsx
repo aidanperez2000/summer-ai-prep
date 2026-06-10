@@ -32,7 +32,8 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.post<AnalyzeToneResponse>('http://localhost:5136/api/ToneAnalysis/analyze', {
+      const analyzeUrl = import.meta.env.VITE_TONELENS_ANALYZE_URL ?? 'http://localhost:5136/api/ToneAnalysis/analyze'
+      const response = await axios.post<AnalyzeToneResponse>(analyzeUrl, {
         text,
         conversationContext,
         relationshipType
