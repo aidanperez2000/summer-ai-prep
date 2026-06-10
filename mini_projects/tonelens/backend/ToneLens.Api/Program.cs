@@ -29,7 +29,8 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-app.UseCors("ReactDev");
+if (app.Environment.IsDevelopment())
+    app.UseCors("ReactDev");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
