@@ -17,7 +17,19 @@ builder.Services.AddHttpClient<IToneAnalysisService, OllamaToneAnalysisService>(
     client.BaseAddress = new Uri(ollamaBaseUrl);
     client.Timeout = TimeSpan.FromMinutes(ollamaTimeoutMinutes);
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactDev", builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 var app = builder.Build();
+
+app.UseCors("ReactDev");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
