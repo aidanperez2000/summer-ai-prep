@@ -56,11 +56,3 @@ button:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
-
-.resultItem {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 4px;
-}
