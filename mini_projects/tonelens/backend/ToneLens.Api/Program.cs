@@ -20,9 +20,9 @@ builder.Services.AddHttpClient<IToneAnalysisService, OllamaToneAnalysisService>(
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactDev", builder =>
+    options.AddPolicy("ReactDev", policyBuilder =>
     {
-        builder.WithOrigins("http://localhost:5173")
+        policyBuilder.WithOrigins("http://localhost:5173")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
