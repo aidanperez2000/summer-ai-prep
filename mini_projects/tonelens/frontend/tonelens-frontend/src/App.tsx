@@ -65,7 +65,7 @@ function App() {
           Relationship Type:
           <input type="text" value={relationshipType} onChange={e => setRelationshipType(e.target.value)} />
         </label>
-        <button onClick={analyzeTone} disabled={loading}>{loading ? 'Analyzing...' : 'Analyze Tone'}</button>
+        <button onClick={analyzeTone} disabled={loading || text.trim().length === 0}>{loading ? 'Analyzing...' : 'Analyze Tone'}</button>
       </section>
       {error && <div className="error">{error}</div>}
       {result && (
