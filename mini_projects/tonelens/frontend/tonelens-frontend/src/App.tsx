@@ -50,7 +50,7 @@ function App() {
       <section className='card'>
         <h1>ToneLens</h1>
         <p>
-          Analhyze the tone of your messages and get insights to improve your communication. Enter your message, provide some context about the conversation and relationship, and let ToneLens help you understand the underlying signals and interpretations.
+          Analyze the tone of your messages and get insights to improve your communication. Enter your message, provide some context about the conversation and relationship, and let ToneLens help you understand the underlying signals and interpretations.
         </p>
         <label>
           Message:
