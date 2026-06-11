@@ -39,7 +39,7 @@ To run ToneLens, follow these steps:
 5. cd into the ToneLens.Api directory:
 
    ```bash
-   cd mini_projects/tonelens/backend/ToneLens.Api
+   cd summer-ai-prep/mini_projects/tonelens/backend/ToneLens.Api
    ```
 
 6. Run the API:
@@ -53,7 +53,7 @@ To run ToneLens, follow these steps:
 8. cd into the ToneLens.Frontend directory:
 
    ```bash
-   cd mini_projects/tonelens/frontend/tonelens-frontend
+   cd summer-ai-prep/mini_projects/tonelens/frontend/tonelens-frontend
    ```
 
 9. Install dependencies:
