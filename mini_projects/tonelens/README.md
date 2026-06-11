@@ -6,7 +6,7 @@
 
 - **Text Input**: Users can input any text they want to analyze.
 - **Conversation Context**: Users can provide additional context about the conversation to get a more accurate tone analysis.
-- **Relationship Information**: Users can specify the relationship between the parties involved in the conversation to
+- **Relationship Information**: Users can specify the relationship between the parties involved in the conversation to tailor the tone analysis accordingly.
 - **Tone Analysis**: The tool analyzes the tone of the text and provides insights into the emotional undertones, sentiment, and overall tone used in the communication.
 - **Interpretation**: The tool offers interpretations of the tone analysis, helping users understand the implications of their communication style.
 - **Ambiguity Detection**: The tool can identify ambiguous language and provide suggestions for clearer communication.
