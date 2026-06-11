@@ -28,7 +28,13 @@ To run ToneLens, follow these steps:
    cd summer-ai-prep/mini_projects/tonelens
    ```
 
-3. Run Ollama server:
+3. Run Ollama server and pull the model used by the API (`qwen3`):
+
+   ```bash
+   ollama pull qwen3
+   ``` 
+
+   Then start the Ollama server:
 
    ```bash
    ollama serve
