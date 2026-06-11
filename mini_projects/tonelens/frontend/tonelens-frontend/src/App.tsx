@@ -174,7 +174,7 @@ function App() {
               </ul>
             </>
           )}
-          {result.suggestedRewrites && result.suggestedRewrites.length > 0 && (
+          {result.suggestedRewrites.length > 0 && (
             <>
               <h3>Suggested Rewrites:</h3>
               <ul>
