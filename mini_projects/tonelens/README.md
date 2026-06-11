@@ -19,7 +19,7 @@ To run ToneLens, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone summer-ai-prep.git
+   git clone https://github.com/aidanperez2000/summer-ai-prep.git
    ```
 
 2. Navigate to the ToneLens directory:
