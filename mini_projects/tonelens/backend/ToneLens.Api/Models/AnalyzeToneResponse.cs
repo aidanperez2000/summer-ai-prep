@@ -5,5 +5,6 @@ namespace ToneLens.Api.Models
         public List<Signal> Signals { get; set; } = new();
         public List<Interpretation> Interpretations { get; set; } = new();
         public List<string>? Ambiguities { get; set; }
+        public List<SuggestedRewrite> SuggestedRewrites { get; set; } = new();
     }
 }

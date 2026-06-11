@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using ToneLens.Api.Models;
 
 namespace ToneLens.Api.Services
@@ -76,37 +77,65 @@ namespace ToneLens.Api.Services
         public static string BuildPrompt(AnalyzeToneRequest request)
         {
             return $$"""
-                You are ToneLens, an AI assistant that analyzes the tone of text messages. Your task is to identify the tone of the provided text and return three key pieces of information:
-                1. Signals: Specific words, phrases, or patterns in the text that indicate a particular tone. For each signal, provide a name, strength (0 to 1), and a brief explanation of why it was identified.
-                2. Interpretations: A concise interpretation of the overall tone of the text, along with a confidence score (0 to 1) and reasoning for the interpretation.
-                3. Ambiguities: Any aspects of the text that could lead to multiple interpretations or uncertainty in the tone analysis.
+                You are ToneLens, an assistant that analyzes communication tone.
 
-                Analyze the following text and provide your response in a structured format:
-                Text: "{{request.Text}}"
-                Conversation Context: "{{request.ConversationContext ?? "None"}}"
-                Relationship Type: "{{request.RelationshipType ?? "None"}}"
+                Analyze the message and return ONLY valid JSON.
 
-                Please format your response as follows:
+                Message:
+                {{request.Text}}
+
+                Conversation context:
+                {{request.ConversationContext}}
+
+                Relationship type:
+                {{request.RelationshipType}}
+
+                Return JSON in this exact shape:
+
                 {
-                    "signals": [
-                        {
-                            "name": "SignalName",
-                            "strength": 0.8,
-                            "explanation": "Explanation of why this signal was identified."
-                        }
-                    ],
-                    "interpretations": [
-                        {
-                            "interpretationText": "Overall tone interpretation.",
-                            "confidenceScore": 0.85,
-                            "reasoning": "Reasoning for the interpretation."
-                        }
-                    ],
-                    "ambiguities": [
-                        "Description of any ambiguities in the analysis."
-                    ]
+                "signals": [
+                    {
+                    "name": "string",
+                    "strength": 0.0,
+                    "explanation": "string"
+                    }
+                ],
+                "interpretations": [
+                    {
+                    "interpretationText": "string",
+                    "confidenceScore": 0.0,
+                    "reasoning": "string"
+                    }
+                ],
+                "ambiguities": [
+                    "string"
+                ],
+                "suggestedRewrites": [
+                    {
+                    "tone": "Warmer",
+                    "rewrittenText": "string",
+                    "explanation": "string"
+                    },
+                    {
+                    "tone": "More neutral",
+                    "rewrittenText": "string",
+                    "explanation": "string"
+                    },
+                    {
+                    "tone": "Clearer",
+                    "rewrittenText": "string",
+                    "explanation": "string"
+                    }
+                ]
                 }
-            """;
+
+                Rules:
+                - Keep suggested rewrites close to the user's original meaning.
+                - Do not make the message longer unless needed.
+                - Generate 3 suggested rewrites.
+                - Strength and confidenceScore must be between 0 and 1.
+                - Return JSON only.
+                """;
         }
 
         /// <summary>
@@ -129,6 +158,12 @@ namespace ToneLens.Api.Services
                 Ambiguities = new List<string>
                 {
                     "The tone could also be interpreted as positive or negative due to some ambiguous language."
+                },
+                SuggestedRewrites = new List<SuggestedRewrite>
+                {
+                    new SuggestedRewrite { Tone = "Warmer", RewrittenText = request.Text, Explanation = "The tone is neutral, but a warmer tone could be more engaging." },
+                    new SuggestedRewrite { Tone = "More neutral", RewrittenText = request.Text, Explanation = "The tone is already neutral, maintaining this tone ensures clarity." },
+                    new SuggestedRewrite { Tone = "Clearer", RewrittenText = request.Text, Explanation = "The tone is neutral, but a clearer tone could improve understanding." }
                 }
             };
         }
@@ -136,27 +171,75 @@ namespace ToneLens.Api.Services
         /// <summary>
         /// Attempts to parse the model response into an <see cref="AnalyzeToneResponse"/>. If parsing fails, a fallback response is returned.
         /// </summary>
-        /// <param name="modelText"></param>
-        /// <param name="request"></param>
-        /// <returns></returns>
+        /// <param name="modelText">The text returned by the model, which may contain JSON and other content.</param>
+        /// <param name="request">The request containing the text and context for tone analysis.</param>
+        /// <returns>An <see cref="AnalyzeToneResponse"/> containing the parsed or fallback tone analysis information.</returns>
         private AnalyzeToneResponse TryParseToneResponse(string modelText, AnalyzeToneRequest request)
         {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            };
+
             try
             {
                 var cleanedJson = ExtractJsonFromModelResponse(modelText);
-                var response = JsonSerializer.Deserialize<AnalyzeToneResponse>(cleanedJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (string.IsNullOrWhiteSpace(cleanedJson))
+                {
+                    _logger.LogWarning("No JSON object could be extracted from model response.");
+                    return BuildFallbackResponse(request);
+                }
+
+                var response = JsonSerializer.Deserialize<AnalyzeToneResponse>(cleanedJson, jsonOptions);
                 if (response != null)
                 {
-                    return response;
+                    return NormalizeResponse(response, request);
                 }
                 _logger.LogWarning("Failed to parse model response into AnalyzeToneResponse.");
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON parsing error while trying to parse model response.");
+                _logger.LogWarning(ex, "JSON parsing error while trying to parse model response.");
             }
 
             return BuildFallbackResponse(request);
+        }
+
+        /// <summary>
+        /// Ensures the parsed model response has required collections and exactly three suggested rewrites for the UI.
+        /// </summary>
+        private static AnalyzeToneResponse NormalizeResponse(AnalyzeToneResponse response, AnalyzeToneRequest request)
+        {
+            response.Signals ??= new List<Signal>();
+            response.Interpretations ??= new List<Interpretation>();
+            response.Ambiguities ??= new List<string>();
+            response.SuggestedRewrites ??= new List<SuggestedRewrite>();
+
+            if (response.SuggestedRewrites.Count > 3)
+            {
+                response.SuggestedRewrites = response.SuggestedRewrites.Take(3).ToList();
+            }
+
+            while (response.SuggestedRewrites.Count < 3)
+            {
+                var tone = response.SuggestedRewrites.Count switch
+                {
+                    0 => "Warmer",
+                    1 => "More neutral",
+                    _ => "Clearer"
+                };
+
+                response.SuggestedRewrites.Add(new SuggestedRewrite
+                {
+                    Tone = tone,
+                    RewrittenText = request.Text,
+                    Explanation = "Fallback rewrite added because model output was incomplete."
+                });
+            }
+
+            return response;
         }
 
         /// <summary>
@@ -166,15 +249,99 @@ namespace ToneLens.Api.Services
         /// <returns>A string containing only the JSON portion of the model response.</returns>
         private static string ExtractJsonFromModelResponse(string modelText)
         {
-            var jsonStart = modelText.IndexOf('{');
-            var jsonEnd = modelText.LastIndexOf('}');
+            if (string.IsNullOrWhiteSpace(modelText))
+            {
+                return string.Empty;
+            }
+
+            var withoutCodeFences = Regex.Replace(modelText, "^```(?:json)?|```$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Multiline).Trim();
+
+            if (TryExtractFirstBalancedJsonObject(withoutCodeFences, out var extractedJson))
+            {
+                return extractedJson;
+            }
+
+            var jsonStart = withoutCodeFences.IndexOf('{');
+            var jsonEnd = withoutCodeFences.LastIndexOf('}');
 
             if (jsonStart >= 0 && jsonEnd > jsonStart)
             {
-                return modelText.Substring(jsonStart, jsonEnd - jsonStart + 1);
+                return withoutCodeFences.Substring(jsonStart, jsonEnd - jsonStart + 1);
             }
 
             return string.Empty;
+        }
+
+        private static bool TryExtractFirstBalancedJsonObject(string text, out string json)
+        {
+            json = string.Empty;
+
+            var depth = 0;
+            var startIndex = -1;
+            var inString = false;
+            var escaped = false;
+
+            for (var i = 0; i < text.Length; i++)
+            {
+                var ch = text[i];
+
+                if (inString)
+                {
+                    if (escaped)
+                    {
+                        escaped = false;
+                        continue;
+                    }
+
+                    if (ch == '\\')
+                    {
+                        escaped = true;
+                        continue;
+                    }
+
+                    if (ch == '"')
+                    {
+                        inString = false;
+                    }
+
+                    continue;
+                }
+
+                if (ch == '"')
+                {
+                    inString = true;
+                    continue;
+                }
+
+                if (ch == '{')
+                {
+                    if (depth == 0)
+                    {
+                        startIndex = i;
+                    }
+
+                    depth++;
+                    continue;
+                }
+
+                if (ch == '}')
+                {
+                    if (depth == 0)
+                    {
+                        continue;
+                    }
+
+                    depth--;
+
+                    if (depth == 0 && startIndex >= 0)
+                    {
+                        json = text.Substring(startIndex, i - startIndex + 1);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

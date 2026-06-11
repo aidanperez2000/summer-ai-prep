@@ -14,10 +14,17 @@ type Interpretation = {
   reasoning: string;
 }
 
+type SuggestedRewrite = {
+  tone: string;
+  rewrittenText: string;
+  explanation: string;
+}
+
 type AnalyzeToneResponse = {
   signals: Signal[];
   interpretations: Interpretation[];
   ambiguities?: string[];
+  suggestedRewrites: SuggestedRewrite[];
 }
 
 function App() {
@@ -163,6 +170,20 @@ function App() {
               <ul>
                 {result.ambiguities.map((ambiguity, index) => (
                   <li key={index}>{ambiguity}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {result.suggestedRewrites && result.suggestedRewrites.length > 0 && (
+            <>
+              <h3>Suggested Rewrites:</h3>
+              <ul>
+                {result.suggestedRewrites.map((rewrite, index) => (
+                  <li key={index}>
+                    <strong>{rewrite.tone} Tone:</strong> {rewrite.explanation}
+                    <br />
+                    <em>Rewritten Text: {rewrite.rewrittenText}</em>
+                  </li>
                 ))}
               </ul>
             </>
