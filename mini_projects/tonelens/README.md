@@ -1,6 +1,6 @@
 # ToneLens
 
-ToneLens is a tool designed to analyze and the tone of a given text.  It allows users to input text, provide the conversation context, and relationship information to get a comprehensive analysis of the tone used in the text. The tool can be used for various applications, including improving communication skills, understanding emotional undertones, and enhancing writing style.
+ ToneLens is a tool designed to analyze the tone of a given text. It allows users to input text, provide conversation context, and relationship information to get a comprehensive analysis of the tone used in the text. The tool can be used for various applications, including improving communication skills, understanding emotional undertones, and enhancing writing style.
 
 ## Features
 
